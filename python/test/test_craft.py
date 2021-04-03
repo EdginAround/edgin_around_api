@@ -6,6 +6,7 @@ from . import common
 
 from edgin_around_api import craft
 
+
 class CraftTest(common.SerdeTest):
     def test_ingredient_filter_items(self) -> None:
         """Checks if filtering works correctly. Filtered list should contain only items compatible
@@ -31,10 +32,16 @@ class CraftTest(common.SerdeTest):
         is zero, the item should be removed."""
 
         assembly = craft.Assembly(
-            recipe_codename='test_recipe',
+            recipe_codename="test_recipe",
             sources=[
-                [craft.Item(0, craft.Essence.ROCKS, 2), craft.Item(4, craft.Essence.ROCKS, 3)],
-                [craft.Item(3, craft.Essence.STICKS, 3), craft.Item(1, craft.Essence.LOGS, 2)],
+                [
+                    craft.Item(0, craft.Essence.ROCKS, 2),
+                    craft.Item(4, craft.Essence.ROCKS, 3),
+                ],
+                [
+                    craft.Item(3, craft.Essence.STICKS, 3),
+                    craft.Item(1, craft.Essence.LOGS, 2),
+                ],
             ],
         )
 
@@ -61,7 +68,7 @@ class CraftTest(common.SerdeTest):
         logs = craft.Item(1, craft.Essence.LOGS, 2)
 
         assembly = craft.Assembly(
-            recipe_codename='test_recipe',
+            recipe_codename="test_recipe",
             sources=[[rocks1, rocks2], [sticks, logs]],
         )
 
@@ -73,22 +80,28 @@ class CraftTest(common.SerdeTest):
         """Updating the assembly items should work correctly."""
 
         assembly = craft.Assembly(
-            recipe_codename='test_recipe',
-            sources=[[
-                craft.Item(1, craft.Essence.GOLD, 3),
-                craft.Item(2, craft.Essence.LOGS, 3),
-                craft.Item(3, craft.Essence.STICKS, 3),
-            ], []],
+            recipe_codename="test_recipe",
+            sources=[
+                [
+                    craft.Item(1, craft.Essence.GOLD, 3),
+                    craft.Item(2, craft.Essence.LOGS, 3),
+                    craft.Item(3, craft.Essence.STICKS, 3),
+                ],
+                [],
+            ],
         )
 
         expected = craft.Assembly(
-            recipe_codename='test_recipe',
-            sources=[[
-                craft.Item(1, craft.Essence.GOLD, 2),
-                craft.Item(2, craft.Essence.LOGS, 5),
-                craft.Item(3, craft.Essence.STICKS, 3),
-                craft.Item(4, craft.Essence.ROCKS, 2),
-            ], []],
+            recipe_codename="test_recipe",
+            sources=[
+                [
+                    craft.Item(1, craft.Essence.GOLD, 2),
+                    craft.Item(2, craft.Essence.LOGS, 5),
+                    craft.Item(3, craft.Essence.STICKS, 3),
+                    craft.Item(4, craft.Essence.ROCKS, 2),
+                ],
+                [],
+            ],
         )
 
         # Negative change on not existing item is a noop
@@ -110,17 +123,21 @@ class CraftTest(common.SerdeTest):
 
     def test_serde_assembly(self) -> None:
         original: Dict[str, Any] = {
-            'recipe_codename': 'my_recipe',
-            'sources': [[{
-                'actor_id': 4,
-                'essence': 'GOLD',
-                'quantity': 6,
-            }, {
-                'actor_id': 7,
-                'essence': 'ROCKS',
-                'quantity': 5,
-            }]]
+            "recipe_codename": "my_recipe",
+            "sources": [
+                [
+                    {
+                        "actor_id": 4,
+                        "essence": "GOLD",
+                        "quantity": 6,
+                    },
+                    {
+                        "actor_id": 7,
+                        "essence": "ROCKS",
+                        "quantity": 5,
+                    },
+                ]
+            ],
         }
 
         self.assert_serde(original, craft.Assembly.Schema(), craft.Assembly)
-

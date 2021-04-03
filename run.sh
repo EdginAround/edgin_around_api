@@ -2,7 +2,8 @@
 
 function usage() {
     echo 'Commands:'
-    echo ' - mypy - runs mypy checker in the main app'
+    echo ' - mypy - runs `mypy` checker in the main app'
+    echo ' - black - runs `black` code formatter'
     echo ' - tests - runs unit tests'
 }
 
@@ -18,6 +19,10 @@ function run_mypy_tests() {
     cd ..
 }
 
+function run_black() {
+    python -m black ./python --config python/black.toml
+}
+
 function run_tests() {
     cd python
     python -m unittest $@
@@ -31,6 +36,9 @@ if (( $# > 0 )); then
     case $command in
         'mypy')
             run_mypy $@
+            ;;
+        'black')
+            run_black $@
             ;;
         'tests')
             run_mypy && run_mypy_tests && run_tests $@

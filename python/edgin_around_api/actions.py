@@ -22,10 +22,9 @@ class Action(abc.ABC):
         return json.dumps(ActionSchema().dump(self))
 
 
-
 @dataclass
 class ConfigurationAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'configuration'
+    SERIALIZATION_NAME = "configuration"
 
     hero_actor_id: defs.ActorId
     elevation: geometry.Elevation
@@ -38,9 +37,10 @@ class ConfigurationAction(Action, defs.Serializable):
         def make(self, data, **kwargs):
             return ConfigurationAction(**data)
 
+
 @dataclass
 class CreateActorsAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'create_actors'
+    SERIALIZATION_NAME = "create_actors"
 
     actors: List[actors.Actor]
 
@@ -54,7 +54,7 @@ class CreateActorsAction(Action, defs.Serializable):
 
 @dataclass
 class DeleteActorsAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'delete_actors'
+    SERIALIZATION_NAME = "delete_actors"
 
     actor_ids: List[defs.ActorId]
 
@@ -68,7 +68,7 @@ class DeleteActorsAction(Action, defs.Serializable):
 
 @dataclass
 class MovementAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'movement'
+    SERIALIZATION_NAME = "movement"
 
     actor_id: defs.ActorId
     speed: float
@@ -88,7 +88,7 @@ class MovementAction(Action, defs.Serializable):
 
 @dataclass
 class LocalizeAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'localize'
+    SERIALIZATION_NAME = "localize"
 
     actor_id: defs.ActorId
     position: geometry.Point
@@ -104,7 +104,7 @@ class LocalizeAction(Action, defs.Serializable):
 
 @dataclass
 class StatUpdateAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'stat_update'
+    SERIALIZATION_NAME = "stat_update"
 
     actor_id: defs.ActorId
     stats: defs.Stats
@@ -120,7 +120,7 @@ class StatUpdateAction(Action, defs.Serializable):
 
 @dataclass
 class PickStartAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'pick_start'
+    SERIALIZATION_NAME = "pick_start"
 
     who: defs.ActorId
     what: defs.ActorId
@@ -136,7 +136,7 @@ class PickStartAction(Action, defs.Serializable):
 
 @dataclass
 class PickEndAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'pick_end'
+    SERIALIZATION_NAME = "pick_end"
 
     who: defs.ActorId
 
@@ -150,7 +150,7 @@ class PickEndAction(Action, defs.Serializable):
 
 @dataclass
 class UpdateInventoryAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'update_inventory'
+    SERIALIZATION_NAME = "update_inventory"
 
     owner_id: defs.ActorId
     inventory: inventory.Inventory
@@ -166,7 +166,7 @@ class UpdateInventoryAction(Action, defs.Serializable):
 
 @dataclass
 class DamageAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'damage'
+    SERIALIZATION_NAME = "damage"
 
     dealer_id: defs.ActorId
     receiver_id: defs.ActorId
@@ -183,9 +183,10 @@ class DamageAction(Action, defs.Serializable):
         def make(self, data, **kwargs):
             return DamageAction(**data)
 
+
 @dataclass
 class CraftStartAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'craft_start'
+    SERIALIZATION_NAME = "craft_start"
 
     crafter_id: defs.ActorId
 
@@ -199,7 +200,7 @@ class CraftStartAction(Action, defs.Serializable):
 
 @dataclass
 class CraftEndAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = 'craft_end'
+    SERIALIZATION_NAME = "craft_end"
 
     crafter_id: defs.ActorId
 
@@ -211,27 +212,30 @@ class CraftEndAction(Action, defs.Serializable):
             return CraftEndAction(**data)
 
 
-_ACTIONS = cast(Sequence[defs.Serializable], (
-    ConfigurationAction,
-    CraftStartAction,
-    CraftEndAction,
-    CreateActorsAction,
-    DeleteActorsAction,
-    MovementAction,
-    LocalizeAction,
-    StatUpdateAction,
-    PickStartAction,
-    PickEndAction,
-    UpdateInventoryAction,
-    DamageAction,
-))
+_ACTIONS = cast(
+    Sequence[defs.Serializable],
+    (
+        ConfigurationAction,
+        CraftStartAction,
+        CraftEndAction,
+        CreateActorsAction,
+        DeleteActorsAction,
+        MovementAction,
+        LocalizeAction,
+        StatUpdateAction,
+        PickStartAction,
+        PickEndAction,
+        UpdateInventoryAction,
+        DamageAction,
+    ),
+)
 
 
 class ActionSchema(OneOfSchema):
     """A schema for any type of action."""
 
-    type_schemas = { cls.SERIALIZATION_NAME: cls.Schema for cls in _ACTIONS }
-    type_names = { cls: cls.SERIALIZATION_NAME for cls in _ACTIONS }
+    type_schemas = {cls.SERIALIZATION_NAME: cls.Schema for cls in _ACTIONS}
+    type_names = {cls: cls.SERIALIZATION_NAME for cls in _ACTIONS}
 
     def get_obj_type(self, obj):
         name = self.type_names.get(type(obj), None)
@@ -252,6 +256,5 @@ def action_from_json_string(string: str) -> Optional[Action]:
         res = ActionSchema().load(data)
         return res
     except Exception as e:
-        print(f'Action deserialisation failure: {e} - ({string})')
+        print(f"Action deserialisation failure: {e} - ({string})")
         return None
-

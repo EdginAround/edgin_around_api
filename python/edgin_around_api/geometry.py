@@ -8,6 +8,7 @@ from marshmallow_oneofschema import OneOfSchema
 
 from typing import Callable, Iterable, Iterator, List, Optional, Set, Tuple, cast
 
+
 class Coordinates:
     @staticmethod
     def cartesian_to_spherical(x, y, z):
@@ -62,21 +63,22 @@ class Coordinate:
         self.lat = lat
         self.lon = lon
 
-    def bearing_to(self, other: 'Coordinate') -> float:
+    def bearing_to(self, other: "Coordinate") -> float:
         """Calculates bearing between two coordinates."""
 
         x = sin(other.lon - self.lon) * cos(other.lat)
-        y = cos(self.lat) * sin(other.lat) - \
-            sin(self.lat) * cos(other.lat) * cos(other.lon - self.lon)
+        y = cos(self.lat) * sin(other.lat) - sin(self.lat) * cos(other.lat) * cos(
+            other.lon - self.lon
+        )
 
         return atan2(x, y)
 
-    def great_circle_distance_to(self, other: 'Coordinate', radius: float) -> float:
+    def great_circle_distance_to(self, other: "Coordinate", radius: float) -> float:
         sin1 = sin(0.5 * abs(self.lat - other.lat))
         sin2 = sin(0.5 * abs(self.lon - other.lon))
         return 2 * radius * asin(sqrt(sin1 * sin1 + cos(self.lat) * cos(other.lat) * sin2 * sin2))
 
-    def moved_by(self, distance, bearing, radius) -> 'Coordinate':
+    def moved_by(self, distance, bearing, radius) -> "Coordinate":
         angular_distance = distance / radius
         cad = cos(angular_distance)
         sad = sin(angular_distance)
@@ -93,7 +95,7 @@ class Coordinate:
 
         return Coordinate(lat2, lon2)
 
-    def to_point(self) -> 'Point':
+    def to_point(self) -> "Point":
         r, theta, phi = Coordinates.geographical_radians_to_spherical(1.0, self.lat, self.lon)
         return Point(theta, phi)
 
@@ -113,19 +115,19 @@ class Point:
         self.theta = theta
         self.phi = phi
 
-    def bearing_to(self, other: 'Point') -> float:
+    def bearing_to(self, other: "Point") -> float:
         """Calculates bearing between two points expressed in spherical coordinates."""
 
         coord1 = self.to_coordinate()
         coord2 = other.to_coordinate()
         return coord1.bearing_to(coord2)
 
-    def great_circle_distance_to(self, other: 'Point', radius: float) -> float:
+    def great_circle_distance_to(self, other: "Point", radius: float) -> float:
         coord1 = self.to_coordinate()
         coord2 = other.to_coordinate()
         return coord1.great_circle_distance_to(coord2, radius)
 
-    def moved_by(self, distance, bearing, radius) -> 'Point':
+    def moved_by(self, distance, bearing, radius) -> "Point":
         return self.to_coordinate().moved_by(distance, bearing, radius).to_point()
 
     def to_coordinate(self) -> Coordinate:
@@ -134,18 +136,20 @@ class Point:
 
 
 class _Terrains(enum.Enum):
-    HILLS = 'hills'
-    RANGES = 'ranges'
-    CONTINENTS = 'continents'
+    HILLS = "hills"
+    RANGES = "ranges"
+    CONTINENTS = "continents"
 
 
 class _TerrainInfo(abc.ABC):
     def evaluate(self, pos: Point, radius: float) -> float:
         pass
 
-    def get_name(self) -> str: ...
+    def get_name(self) -> str:
+        ...
 
-    def get_origin(self) -> Point: ...
+    def get_origin(self) -> Point:
+        ...
 
 
 @dataclass
@@ -160,9 +164,14 @@ class Hills(_TerrainInfo):
             return Hills(**data)
 
     def evaluate(self, pos: Point, radius: float) -> float:
-        return 0.006 * radius \
-            * (pos.theta / pi - 1) * sin(50 * pos.phi) \
-            * (pos.theta / pi - 2) * sin(50 * pos.theta)
+        return (
+            0.006
+            * radius
+            * (pos.theta / pi - 1)
+            * sin(50 * pos.phi)
+            * (pos.theta / pi - 2)
+            * sin(50 * pos.theta)
+        )
 
     def get_name(self) -> str:
         return _Terrains.HILLS.value
@@ -242,8 +251,8 @@ class Elevation:
         @marshmallow.post_load
         def make(self, data, **kwargs):
             schema = _TerrainSchema()
-            ef = Elevation(data['radius'])
-            ef.terrain = data['terrain']
+            ef = Elevation(data["radius"])
+            ef.terrain = data["terrain"]
             return ef
 
     def __init__(self, radius: float) -> None:
@@ -261,4 +270,3 @@ class Elevation:
 
     def evaluate_with_radius(self, position: Point) -> float:
         return self.radius + self.evaluate_without_radius(position)
-

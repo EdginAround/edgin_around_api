@@ -16,29 +16,29 @@ class Essence(Enum):
     """Represents a general category of an item/entity."""
 
     # Raw materials
-    ROCKS = 'rocks'
-    GOLD = 'gold'
-    MEAT = 'meat'
-    LOGS = 'log'
-    STICKS = 'sticks'
+    ROCKS = "rocks"
+    GOLD = "gold"
+    MEAT = "meat"
+    LOGS = "log"
+    STICKS = "sticks"
 
     # Clothing
-    HAT = 'hat'
-    COAT = 'coat'
-    GLOVES = 'gloves'
-    SHOES = 'shoes'
-    BELT = 'belt'
-    BOTTOM_WEAR = 'bottom_wear'
-    UPPER_WEAR = 'upper_wear'
-    BAG = 'bag'
+    HAT = "hat"
+    COAT = "coat"
+    GLOVES = "gloves"
+    SHOES = "shoes"
+    BELT = "belt"
+    BOTTOM_WEAR = "bottom_wear"
+    UPPER_WEAR = "upper_wear"
+    BAG = "bag"
 
     # Other
-    PLANT = 'plant'
-    HERO = 'hero'
-    TOOL = 'tool'
+    PLANT = "plant"
+    HERO = "hero"
+    TOOL = "tool"
 
     # Default category
-    VOID = 'void'
+    VOID = "void"
 
     def get_description(self) -> str:
         """Returns a description of the essence to be used in GUI labels."""
@@ -46,28 +46,28 @@ class Essence(Enum):
         if self in _ESSENCE_DESCRIPTIONS:
             return _ESSENCE_DESCRIPTIONS[self]
         else:
-            return '[Unknown]'
+            return "[Unknown]"
 
     def get_image_name(self) -> str:
         return self.value
 
 
 _ESSENCE_DESCRIPTIONS: Dict[Essence, str] = {
-    Essence.ROCKS: 'Rocks',
-    Essence.GOLD: 'Gold',
-    Essence.LOGS: 'Logs',
-    Essence.STICKS: 'Sticks',
-    Essence.HAT: 'Hat',
-    Essence.COAT: 'Coat',
-    Essence.GLOVES: 'Gloves',
-    Essence.SHOES: 'Shoes',
-    Essence.BELT: 'Belt',
-    Essence.BOTTOM_WEAR: 'Bottom Wear',
-    Essence.UPPER_WEAR: 'Upper Wear',
-    Essence.BAG: 'Bag',
-    Essence.PLANT: 'Plant',
-    Essence.HERO: 'Hero',
-    Essence.TOOL: 'Tool',
+    Essence.ROCKS: "Rocks",
+    Essence.GOLD: "Gold",
+    Essence.LOGS: "Logs",
+    Essence.STICKS: "Sticks",
+    Essence.HAT: "Hat",
+    Essence.COAT: "Coat",
+    Essence.GLOVES: "Gloves",
+    Essence.SHOES: "Shoes",
+    Essence.BELT: "Belt",
+    Essence.BOTTOM_WEAR: "Bottom Wear",
+    Essence.UPPER_WEAR: "Upper Wear",
+    Essence.BAG: "Bag",
+    Essence.PLANT: "Plant",
+    Essence.HERO: "Hero",
+    Essence.TOOL: "Tool",
 }
 
 
@@ -76,31 +76,31 @@ class Material(Enum):
     """Represents a category of a recipe ingredient. Only entities with `Essence` matching the
     `Material` can be used the given recipe ingredient."""
 
-    FABRIC = 'fabric'
-    GADGET = 'gadget'
-    LEATHER = 'leather'
-    MEAT = 'meat'
-    MINERAL = 'mineral'
-    ORNAMENT = 'ornament'
-    WATER = 'water'
-    WOOD = 'wood'
+    FABRIC = "fabric"
+    GADGET = "gadget"
+    LEATHER = "leather"
+    MEAT = "meat"
+    MINERAL = "mineral"
+    ORNAMENT = "ornament"
+    WATER = "water"
+    WOOD = "wood"
 
     def get_description(self) -> str:
         if self in _MATERIAL_DESCRIPTIONS:
             return _MATERIAL_DESCRIPTIONS[self]
         else:
-            return '[Unknown]'
+            return "[Unknown]"
 
 
 _MATERIAL_DESCRIPTIONS: Dict[Material, str] = {
-    Material.FABRIC: 'Fabric',
-    Material.GADGET: 'Gadget',
-    Material.LEATHER: 'Leather',
-    Material.MEAT: 'Meat',
-    Material.MINERAL: 'Mineral',
-    Material.ORNAMENT: 'Ornament',
-    Material.WATER: 'Water',
-    Material.WOOD: 'Wood',
+    Material.FABRIC: "Fabric",
+    Material.GADGET: "Gadget",
+    Material.LEATHER: "Leather",
+    Material.MEAT: "Meat",
+    Material.MINERAL: "Mineral",
+    Material.ORNAMENT: "Ornament",
+    Material.WATER: "Water",
+    Material.WOOD: "Wood",
 }
 
 
@@ -112,13 +112,13 @@ class Match:
         self.essence = essence
 
     def __repr__(self) -> str:
-        return f'Match({self.material.get_description()}, {self.essence.get_description()})'
+        return f"Match({self.material.get_description()}, {self.essence.get_description()})"
 
     def __eq__(self, other) -> bool:
         return self.material == other.material and self.essence == other.essence
 
     def __hash__(self) -> int:
-         return hash((self.material, self.essence))
+        return hash((self.material, self.essence))
 
 
 _MATCHES = {
@@ -146,17 +146,21 @@ class Item:
         self.quantity = quantity
 
     def __repr__(self) -> str:
-        return f'Item(id={self.actor_id}, ' \
-            f'essence={self.essence.get_description()}, quantity={self.quantity})'
+        return (
+            f"Item(id={self.actor_id}, "
+            f"essence={self.essence.get_description()}, quantity={self.quantity})"
+        )
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, Item) \
-           and self.actor_id == other.actor_id \
-           and self.essence == other.essence \
-           and self.quantity == other.quantity
+        return (
+            isinstance(other, Item)
+            and self.actor_id == other.actor_id
+            and self.essence == other.essence
+            and self.quantity == other.quantity
+        )
 
     def __hash__(self) -> int:
-         return hash((self.actor_id, self.essence, self.quantity))
+        return hash((self.actor_id, self.essence, self.quantity))
 
 
 class Ingredient:
@@ -188,8 +192,8 @@ class Ingredient:
         return result
 
     def __repr__(self) -> str:
-        optional = 'optional' if self.optional else 'required'
-        return f'Ingredient({self.material.get_description()}, {self.value}, {optional})'
+        optional = "optional" if self.optional else "required"
+        return f"Ingredient({self.material.get_description()}, {self.value}, {optional})"
 
 
 class Assembly:
@@ -264,12 +268,14 @@ class Assembly:
         return set(filter(lambda e: e.quantity > 0, items))
 
     def __repr__(self) -> str:
-        return f'Assembly({self.recipe_codename}, {self.sources})'
+        return f"Assembly({self.recipe_codename}, {self.sources})"
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, Assembly) \
-           and self.recipe_codename == other.recipe_codename \
-           and [set(src) for src in self.sources] == [set(src) for src in other.sources]
+        return (
+            isinstance(other, Assembly)
+            and self.recipe_codename == other.recipe_codename
+            and [set(src) for src in self.sources] == [set(src) for src in other.sources]
+        )
 
 
 class Recipe:
@@ -310,4 +316,3 @@ class Recipe:
                 return False
 
         return True
-

@@ -21,11 +21,11 @@ class Actor:
             return Actor(**data)
 
     def __init__(
-            self,
-            id: defs.ActorId,
-            entity_name: str,
-            position: Optional[geometry.Point] = None,
-        ) -> None:
+        self,
+        id: defs.ActorId,
+        entity_name: str,
+        position: Optional[geometry.Point] = None,
+    ) -> None:
         self.id = id
         self.position = position
         self.entity_name = entity_name
@@ -35,4 +35,3 @@ class Actor:
 
     def is_visible(self) -> bool:
         return self.position is not None
-

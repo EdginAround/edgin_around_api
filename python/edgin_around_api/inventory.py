@@ -37,6 +37,7 @@ class EntityInfo:
     def calc_max_quantity_for_item_volume(self, volume: int):
         return self.max_volume // volume
 
+
 class Inventory:
     class Schema(marshmallow.Schema):
         left_hand = mf.Nested(EntityInfo.Schema, allow_none=True)
@@ -47,19 +48,19 @@ class Inventory:
         def make(self, data, **kwargs):
             inv = Inventory()
 
-            left_hand = data['left_hand']
+            left_hand = data["left_hand"]
             if left_hand is not None:
                 inv.store_entry(defs.Hand.LEFT, EntityInfo(**left_hand))
             else:
                 inv.store_entry(defs.Hand.LEFT, None)
 
-            right_hand = data['right_hand']
+            right_hand = data["right_hand"]
             if right_hand is not None:
                 inv.store_entry(defs.Hand.RIGHT, EntityInfo(**right_hand))
             else:
                 inv.store_entry(defs.Hand.RIGHT, None)
 
-            for i, entry in enumerate(data['entries']):
+            for i, entry in enumerate(data["entries"]):
                 if entry is not None:
                     inv.insert_entry(i, EntityInfo(**entry))
                 else:
@@ -112,15 +113,15 @@ class Inventory:
         return result
 
     def store(
-            self,
-            hand: defs.Hand,
-            id: defs.ActorId,
-            essence: craft.Essence,
-            current_quantity: int,
-            item_volume: int,
-            max_volume: int,
-            codename: str,
-        ) -> None:
+        self,
+        hand: defs.Hand,
+        id: defs.ActorId,
+        essence: craft.Essence,
+        current_quantity: int,
+        item_volume: int,
+        max_volume: int,
+        codename: str,
+    ) -> None:
         entry = EntityInfo(id, essence, current_quantity, item_volume, max_volume, codename)
         self.store_entry(hand, entry)
 
@@ -131,15 +132,15 @@ class Inventory:
             self.right_hand = entry
 
     def insert(
-            self,
-            index: int,
-            id: defs.ActorId,
-            essence: craft.Essence,
-            current_quantity: int,
-            item_volume: int,
-            max_volume: int,
-            codename: str,
-        ) -> None:
+        self,
+        index: int,
+        id: defs.ActorId,
+        essence: craft.Essence,
+        current_quantity: int,
+        item_volume: int,
+        max_volume: int,
+        codename: str,
+    ) -> None:
         entry = EntityInfo(id, essence, current_quantity, item_volume, max_volume, codename)
         self.insert_entry(index, entry)
 
@@ -209,4 +210,3 @@ class Inventory:
 
     def is_index_valid(self, index: int) -> bool:
         return -1 < index and index < defs.INVENTORY_SIZE
-

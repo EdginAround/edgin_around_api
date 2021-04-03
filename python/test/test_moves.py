@@ -6,12 +6,13 @@ from . import common
 
 from edgin_around_api import moves
 
+
 class CraftTest(common.SerdeTest):
     def test_serde_stop(self) -> None:
         """Test serialisation and deserialisation of StopMove."""
 
         original: Dict[str, Any] = {
-            'type': 'stop',
+            "type": "stop",
         }
 
         self.assert_serde(original, moves.MoveSchema(), moves.StopMove)
@@ -20,10 +21,9 @@ class CraftTest(common.SerdeTest):
         """Test serialisation and deserialisation of HandActivationMove."""
 
         original: Dict[str, Any] = {
-            'type': 'hand_activation',
-            'hand': 'LEFT',
-            'object_id': 4,
+            "type": "hand_activation",
+            "hand": "LEFT",
+            "object_id": 4,
         }
 
         self.assert_serde(original, moves.MoveSchema(), moves.HandActivationMove)
-

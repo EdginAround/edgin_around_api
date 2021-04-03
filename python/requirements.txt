@@ -1,3 +1,4 @@
+black
 marshmallow
 marshmallow-enum
 marshmallow-oneofschema

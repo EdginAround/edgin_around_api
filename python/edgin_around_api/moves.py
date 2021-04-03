@@ -21,7 +21,7 @@ class Move(abc.ABC):
 
 @dataclass
 class StopMove(Move):
-    SERIALIZATION_NAME = 'stop'
+    SERIALIZATION_NAME = "stop"
 
     class Schema(marshmallow.Schema):
         @marshmallow.post_load
@@ -31,7 +31,7 @@ class StopMove(Move):
 
 @dataclass
 class ConcludeMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = 'conclude'
+    SERIALIZATION_NAME = "conclude"
 
     class Schema(marshmallow.Schema):
         @marshmallow.post_load
@@ -41,7 +41,7 @@ class ConcludeMove(Move, defs.Serializable):
 
 @dataclass
 class StartMotionMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = 'start_motion'
+    SERIALIZATION_NAME = "start_motion"
 
     bearing: float
 
@@ -55,7 +55,7 @@ class StartMotionMove(Move, defs.Serializable):
 
 @dataclass
 class HandActivationMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = 'hand_activation'
+    SERIALIZATION_NAME = "hand_activation"
 
     hand: defs.Hand
     object_id: Optional[defs.ActorId]
@@ -71,7 +71,7 @@ class HandActivationMove(Move, defs.Serializable):
 
 @dataclass
 class InventoryUpdateMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = 'inventory_update'
+    SERIALIZATION_NAME = "inventory_update"
 
     hand: defs.Hand
     inventory_index: int
@@ -89,7 +89,7 @@ class InventoryUpdateMove(Move, defs.Serializable):
 
 @dataclass
 class CraftMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = 'craft'
+    SERIALIZATION_NAME = "craft"
 
     assembly: craft.Assembly
 
@@ -101,21 +101,24 @@ class CraftMove(Move, defs.Serializable):
             return CraftMove(**data)
 
 
-_MOVES = cast(Sequence[defs.Serializable], (
-    StopMove,
-    ConcludeMove,
-    StartMotionMove,
-    HandActivationMove,
-    InventoryUpdateMove,
-    CraftMove,
-))
+_MOVES = cast(
+    Sequence[defs.Serializable],
+    (
+        StopMove,
+        ConcludeMove,
+        StartMotionMove,
+        HandActivationMove,
+        InventoryUpdateMove,
+        CraftMove,
+    ),
+)
 
 
 class MoveSchema(OneOfSchema):
     """A schema for any type of action."""
 
-    type_schemas = { cls.SERIALIZATION_NAME: cls.Schema for cls in _MOVES }
-    type_names = { cls: cls.SERIALIZATION_NAME for cls in _MOVES }
+    type_schemas = {cls.SERIALIZATION_NAME: cls.Schema for cls in _MOVES}
+    type_names = {cls: cls.SERIALIZATION_NAME for cls in _MOVES}
 
     def get_obj_type(self, obj):
         name = self.type_names.get(type(obj), None)
@@ -136,6 +139,5 @@ def move_from_json_string(string: str) -> Optional[Move]:
         res = MoveSchema().load(data)
         return res
     except Exception as e:
-        print(f'Move deserialisation failure: {e} - ({string})')
+        print(f"Move deserialisation failure: {e} - ({string})")
         return None
-

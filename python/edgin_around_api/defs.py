@@ -13,7 +13,7 @@ VERSION = (0, 0, 1)
 PORT_BROADCAST = 54300
 PORT_DATA = 54301
 INVENTORY_SIZE: int = 20
-SERIALIZATION_TYPE_FIELD = '_type'
+SERIALIZATION_TYPE_FIELD = "_type"
 UNASSIGNED_ACTOR_ID: Final[ActorId] = -1
 
 
@@ -29,10 +29,10 @@ class Hand(Enum):
 
 
 class DamageVariant(Enum):
-    HIT = 'hit'
-    CHOP = 'chop'
-    SMASH = 'smash'
-    ATTACK = 'attack'
+    HIT = "hit"
+    CHOP = "chop"
+    SMASH = "smash"
+    ATTACK = "attack"
 
 
 class UpdateVariant(Enum):
@@ -43,8 +43,8 @@ class UpdateVariant(Enum):
 
 
 class Attachement(Enum):
-    LEFT_ITEM = 'left_item'
-    RIGHT_ITEM = 'right_item'
+    LEFT_ITEM = "left_item"
+    RIGHT_ITEM = "right_item"
 
 
 class Stats:
@@ -66,11 +66,11 @@ class Debugable:
 
     def __str__(self) -> str:
         fields = {field: str(getattr(self, field)) for field in self.DEBUG_FIELDS}
-        return f'{type(self).__name__}{fields}'
+        return f"{type(self).__name__}{fields}"
 
 
 class Serializable:
-    SERIALIZATION_NAME: str = '___'
+    SERIALIZATION_NAME: str = "___"
 
     class Schema(marshmallow.Schema):
         pass
@@ -86,4 +86,3 @@ class Serializable:
 
 def assert_exhaustive(x: NoReturn) -> NoReturn:
     assert False, "Unhandled type: {}".format(type(x).__name__)
-

@@ -4,9 +4,10 @@ from typing import Any, Dict, Final
 
 from edgin_around_api import craft, defs, inventory
 
+
 class InventoryTest(unittest.TestCase):
     def test_capasity(self) -> None:
-        entry = inventory.EntityInfo(0, craft.Essence.ROCKS, 1, 1, 100, '')
+        entry = inventory.EntityInfo(0, craft.Essence.ROCKS, 1, 1, 100, "")
         self.assertEqual(entry.calc_max_quantity_for_item_volume(20), 5)
         self.assertEqual(entry.calc_max_quantity_for_item_volume(22), 4)
 
@@ -19,7 +20,7 @@ class InventoryTest(unittest.TestCase):
             current_quantity=1,
             item_volume=1,
             max_volume=100,
-            codename='',
+            codename="",
         )
         inv.store(
             defs.Hand.RIGHT,
@@ -28,7 +29,7 @@ class InventoryTest(unittest.TestCase):
             current_quantity=2,
             item_volume=1,
             max_volume=100,
-            codename='',
+            codename="",
         )
 
         expected = {
@@ -50,7 +51,7 @@ class InventoryTest(unittest.TestCase):
             current_quantity=1,
             item_volume=1,
             max_volume=100,
-            codename='',
+            codename="",
         )
         inv.store(
             defs.Hand.RIGHT,
@@ -59,7 +60,7 @@ class InventoryTest(unittest.TestCase):
             current_quantity=2,
             item_volume=1,
             max_volume=100,
-            codename='',
+            codename="",
         )
         inv.insert(
             INDEX,
@@ -68,7 +69,7 @@ class InventoryTest(unittest.TestCase):
             current_quantity=2,
             item_volume=1,
             max_volume=100,
-            codename='',
+            codename="",
         )
 
         inv.swap(defs.Hand.LEFT, INDEX)
@@ -86,7 +87,7 @@ class InventoryTest(unittest.TestCase):
             current_quantity=1,
             item_volume=1,
             max_volume=100,
-            codename='',
+            codename="",
         )
         inv.store(
             defs.Hand.RIGHT,
@@ -95,7 +96,7 @@ class InventoryTest(unittest.TestCase):
             current_quantity=2,
             item_volume=1,
             max_volume=100,
-            codename='',
+            codename="",
         )
 
         expected = {
@@ -113,16 +114,16 @@ class InventoryTest(unittest.TestCase):
         """
 
         original: Dict[str, Any] = {
-            'left_hand': None,
-            'right_hand': None,
-            'entries': 20 * [None],
+            "left_hand": None,
+            "right_hand": None,
+            "entries": 20 * [None],
         }
 
         schema = inventory.Inventory.Schema()
         inv = schema.load(original)
         self.assertEqual(type(inv), inventory.Inventory)
         parsed = schema.dump(inv)
-        self.assertFalse('\n' in parsed)
+        self.assertFalse("\n" in parsed)
         self.assertDictEqual(original, parsed)
 
     def test_serialization_filled(self) -> None:
@@ -131,40 +132,57 @@ class InventoryTest(unittest.TestCase):
         with items.
         """
 
-        original:Dict[str, Any] = {
-            'left_hand': {
-                'id': 1,
-                'essence': 'LOGS',
-                'current_quantity': 1,
-                'codename': 'log',
-                'item_volume': 3,
-                'max_volume': 100,
+        original: Dict[str, Any] = {
+            "left_hand": {
+                "id": 1,
+                "essence": "LOGS",
+                "current_quantity": 1,
+                "codename": "log",
+                "item_volume": 3,
+                "max_volume": 100,
             },
-            'right_hand': {
-                'id': 2,
-                'essence': 'ROCKS',
-                'current_quantity': 3,
-                'codename': 'rocks',
-                'item_volume': 5,
-                'max_volume': 100,
+            "right_hand": {
+                "id": 2,
+                "essence": "ROCKS",
+                "current_quantity": 3,
+                "codename": "rocks",
+                "item_volume": 5,
+                "max_volume": 100,
             },
-            'entries': [
-                None, None, None, None, None, None, None, None, None, {
-                    'id': 3,
-                    'essence': 'GOLD',
-                    'current_quantity': 2,
-                    'codename': 'gold',
-                    'item_volume': 5,
-                    'max_volume': 100,
+            "entries": [
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                {
+                    "id": 3,
+                    "essence": "GOLD",
+                    "current_quantity": 2,
+                    "codename": "gold",
+                    "item_volume": 5,
+                    "max_volume": 100,
                 },
-                None, None, None, None, None, None, None, None, None, None,
-            ]
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ],
         }
 
         schema = inventory.Inventory.Schema()
         inv = schema.load(original)
         self.assertEqual(type(inv), inventory.Inventory)
         parsed = schema.dump(inv)
-        self.assertFalse('\n' in parsed)
+        self.assertFalse("\n" in parsed)
         self.assertDictEqual(original, parsed)
-
