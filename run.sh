@@ -29,6 +29,12 @@ function run_tests() {
     cd ..
 }
 
+function run_package() {
+    cd python
+    python setup.py sdist
+    cd ..
+}
+
 if (( $# > 0 )); then
     command=$1
     shift
@@ -42,6 +48,9 @@ if (( $# > 0 )); then
             ;;
         'tests')
             run_mypy && run_mypy_tests && run_tests $@
+            ;;
+        'package')
+            run_package
             ;;
         *)
             echo "Command \"$command\" unknown."
