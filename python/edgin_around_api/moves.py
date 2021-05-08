@@ -20,16 +20,6 @@ class Move(abc.ABC):
 
 
 @dataclass
-class StopMove(Move):
-    SERIALIZATION_NAME = "stop"
-
-    class Schema(marshmallow.Schema):
-        @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return StopMove(**data)
-
-
-@dataclass
 class ConcludeMove(Move, defs.Serializable):
     SERIALIZATION_NAME = "conclude"
 
@@ -40,17 +30,17 @@ class ConcludeMove(Move, defs.Serializable):
 
 
 @dataclass
-class StartMotionMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = "start_motion"
+class CraftMove(Move, defs.Serializable):
+    SERIALIZATION_NAME = "craft"
 
-    bearing: float
+    assembly: craft.Assembly
 
     class Schema(marshmallow.Schema):
-        bearing = mf.Float()
+        assembly = mf.Nested(craft.Assembly.Schema)
 
         @marshmallow.post_load
         def make(self, data, **kwargs):
-            return StartMotionMove(**data)
+            return CraftMove(**data)
 
 
 @dataclass
@@ -88,28 +78,38 @@ class InventoryUpdateMove(Move, defs.Serializable):
 
 
 @dataclass
-class CraftMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = "craft"
+class StartMotionMove(Move, defs.Serializable):
+    SERIALIZATION_NAME = "start_motion"
 
-    assembly: craft.Assembly
+    bearing: float
 
     class Schema(marshmallow.Schema):
-        assembly = mf.Nested(craft.Assembly.Schema)
+        bearing = mf.Float()
 
         @marshmallow.post_load
         def make(self, data, **kwargs):
-            return CraftMove(**data)
+            return StartMotionMove(**data)
+
+
+@dataclass
+class StopMove(Move):
+    SERIALIZATION_NAME = "stop"
+
+    class Schema(marshmallow.Schema):
+        @marshmallow.post_load
+        def make(self, data, **kwargs):
+            return StopMove(**data)
 
 
 _MOVES = cast(
     Sequence[defs.Serializable],
     (
-        StopMove,
         ConcludeMove,
-        StartMotionMove,
+        CraftMove,
         HandActivationMove,
         InventoryUpdateMove,
-        CraftMove,
+        StartMotionMove,
+        StopMove,
     ),
 )
 

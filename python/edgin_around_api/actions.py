@@ -39,6 +39,34 @@ class ConfigurationAction(Action, defs.Serializable):
 
 
 @dataclass
+class CraftEndAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "craft_end"
+
+    crafter_id: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        crafter_id = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs):
+            return CraftEndAction(**data)
+
+
+@dataclass
+class CraftStartAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "craft_start"
+
+    crafter_id: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        crafter_id = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs):
+            return CraftStartAction(**data)
+
+
+@dataclass
 class CreateActorsAction(Action, defs.Serializable):
     SERIALIZATION_NAME = "create_actors"
 
@@ -53,6 +81,25 @@ class CreateActorsAction(Action, defs.Serializable):
 
 
 @dataclass
+class DamageAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "damage"
+
+    dealer_id: defs.ActorId
+    receiver_id: defs.ActorId
+    variant: defs.DamageVariant
+    hand: defs.Hand
+
+    class Schema(marshmallow.Schema):
+        dealer_id = mf.Integer()
+        receiver_id = mf.Integer()
+        variant = EnumField(defs.DamageVariant)
+        hand = EnumField(defs.Hand)
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs):
+            return DamageAction(**data)
+
+@dataclass
 class DeleteActorsAction(Action, defs.Serializable):
     SERIALIZATION_NAME = "delete_actors"
 
@@ -64,6 +111,22 @@ class DeleteActorsAction(Action, defs.Serializable):
         @marshmallow.post_load
         def make(self, data, **kwargs):
             return DeleteActorsAction(**data)
+
+
+@dataclass
+class LocalizeAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "localize"
+
+    actor_id: defs.ActorId
+    position: geometry.Point
+
+    class Schema(marshmallow.Schema):
+        actor_id = mf.Integer()
+        position = mf.Nested(geometry.Point.Schema)
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs):
+            return LocalizeAction(**data)
 
 
 @dataclass
@@ -87,35 +150,17 @@ class MovementAction(Action, defs.Serializable):
 
 
 @dataclass
-class LocalizeAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = "localize"
+class PickEndAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "pick_end"
 
-    actor_id: defs.ActorId
-    position: geometry.Point
+    who: defs.ActorId
 
     class Schema(marshmallow.Schema):
-        actor_id = mf.Integer()
-        position = mf.Nested(geometry.Point.Schema)
+        who = mf.Integer()
 
         @marshmallow.post_load
         def make(self, data, **kwargs):
-            return LocalizeAction(**data)
-
-
-@dataclass
-class StatUpdateAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = "stat_update"
-
-    actor_id: defs.ActorId
-    stats: defs.Stats
-
-    class Schema(marshmallow.Schema):
-        actor_id = mf.Integer()
-        stats = mf.Nested(defs.Stats.Schema)
-
-        @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return StatUpdateAction(**data)
+            return PickEndAction(**data)
 
 
 @dataclass
@@ -135,17 +180,19 @@ class PickStartAction(Action, defs.Serializable):
 
 
 @dataclass
-class PickEndAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = "pick_end"
+class StatUpdateAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "stat_update"
 
-    who: defs.ActorId
+    actor_id: defs.ActorId
+    stats: defs.Stats
 
     class Schema(marshmallow.Schema):
-        who = mf.Integer()
+        actor_id = mf.Integer()
+        stats = mf.Nested(defs.Stats.Schema)
 
         @marshmallow.post_load
         def make(self, data, **kwargs):
-            return PickEndAction(**data)
+            return StatUpdateAction(**data)
 
 
 @dataclass
@@ -164,69 +211,22 @@ class UpdateInventoryAction(Action, defs.Serializable):
             return UpdateInventoryAction(**data)
 
 
-@dataclass
-class DamageAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = "damage"
-
-    dealer_id: defs.ActorId
-    receiver_id: defs.ActorId
-    variant: defs.DamageVariant
-    hand: defs.Hand
-
-    class Schema(marshmallow.Schema):
-        dealer_id = mf.Integer()
-        receiver_id = mf.Integer()
-        variant = EnumField(defs.DamageVariant)
-        hand = EnumField(defs.Hand)
-
-        @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return DamageAction(**data)
-
-
-@dataclass
-class CraftStartAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = "craft_start"
-
-    crafter_id: defs.ActorId
-
-    class Schema(marshmallow.Schema):
-        crafter_id = mf.Integer()
-
-        @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return CraftStartAction(**data)
-
-
-@dataclass
-class CraftEndAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = "craft_end"
-
-    crafter_id: defs.ActorId
-
-    class Schema(marshmallow.Schema):
-        crafter_id = mf.Integer()
-
-        @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return CraftEndAction(**data)
-
 
 _ACTIONS = cast(
     Sequence[defs.Serializable],
     (
         ConfigurationAction,
-        CraftStartAction,
         CraftEndAction,
+        CraftStartAction,
         CreateActorsAction,
-        DeleteActorsAction,
-        MovementAction,
-        LocalizeAction,
-        StatUpdateAction,
-        PickStartAction,
-        PickEndAction,
-        UpdateInventoryAction,
         DamageAction,
+        DeleteActorsAction,
+        LocalizeAction,
+        MovementAction,
+        PickEndAction,
+        PickStartAction,
+        StatUpdateAction,
+        UpdateInventoryAction,
     ),
 )
 
