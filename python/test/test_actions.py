@@ -8,15 +8,15 @@ from edgin_around_api import actions
 
 
 class ActionsTest(common.SerdeTest):
-    def test_serde_delete_actors(self) -> None:
+    def test_serde_actor_deletion(self) -> None:
         """Test serialisation and deserialisation of DeleteActorsAction."""
 
         original: Dict[str, Any] = {
-            "type": "delete_actors",
+            "type": "actor_deletion",
             "actor_ids": [1, 4, 2],
         }
 
-        self.assert_serde(original, actions.ActionSchema(), actions.DeleteActorsAction)
+        self.assert_serde(original, actions.ActionSchema(), actions.ActorDeletionAction)
 
     def test_serde_damage(self) -> None:
         """Test serialisation and deserialisation of DamageAction."""
@@ -50,7 +50,7 @@ class ActionsTest(common.SerdeTest):
     def test_serde_to_string(self) -> None:
         """Test if `Action.to_string` works correctly."""
 
-        action = actions.MovementAction(
+        action = actions.MotionAction(
             actor_id=0,
             speed=7.0,
             bearing=30.0,
@@ -62,4 +62,4 @@ class ActionsTest(common.SerdeTest):
         self.assertTrue('"bearing": 30.0' in string)
         self.assertTrue('"duration": 1.0' in string)
         self.assertTrue('"speed": 7.0' in string)
-        self.assertTrue('"type": "movement"' in string)
+        self.assertTrue('"type": "motion"' in string)

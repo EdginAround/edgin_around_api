@@ -20,16 +20,6 @@ class Move(abc.ABC):
 
 
 @dataclass
-class ConcludeMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = "conclude"
-
-    class Schema(marshmallow.Schema):
-        @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return ConcludeMove(**data)
-
-
-@dataclass
 class CraftMove(Move, defs.Serializable):
     SERIALIZATION_NAME = "craft"
 
@@ -39,7 +29,7 @@ class CraftMove(Move, defs.Serializable):
         assembly = mf.Nested(craft.Assembly.Schema)
 
         @marshmallow.post_load
-        def make(self, data, **kwargs):
+        def make(self, data, **kwargs) -> Move:
             return CraftMove(**data)
 
 
@@ -55,7 +45,7 @@ class HandActivationMove(Move, defs.Serializable):
         object_id = mf.Integer()
 
         @marshmallow.post_load
-        def make(self, data, **kwargs):
+        def make(self, data, **kwargs) -> Move:
             return HandActivationMove(**data)
 
 
@@ -73,13 +63,13 @@ class InventoryUpdateMove(Move, defs.Serializable):
         update_variant = EnumField(defs.UpdateVariant)
 
         @marshmallow.post_load
-        def make(self, data, **kwargs):
+        def make(self, data, **kwargs) -> Move:
             return InventoryUpdateMove(**data)
 
 
 @dataclass
-class StartMotionMove(Move, defs.Serializable):
-    SERIALIZATION_NAME = "start_motion"
+class MotionStartMove(Move, defs.Serializable):
+    SERIALIZATION_NAME = "motion_start"
 
     bearing: float
 
@@ -87,29 +77,28 @@ class StartMotionMove(Move, defs.Serializable):
         bearing = mf.Float()
 
         @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return StartMotionMove(**data)
+        def make(self, data, **kwargs) -> Move:
+            return MotionStartMove(**data)
 
 
 @dataclass
-class StopMove(Move):
-    SERIALIZATION_NAME = "stop"
+class MotionStopMove(Move):
+    SERIALIZATION_NAME = "motion_stop"
 
     class Schema(marshmallow.Schema):
         @marshmallow.post_load
-        def make(self, data, **kwargs):
-            return StopMove(**data)
+        def make(self, data, **kwargs) -> Move:
+            return MotionStopMove()
 
 
 _MOVES = cast(
     Sequence[defs.Serializable],
     (
-        ConcludeMove,
         CraftMove,
         HandActivationMove,
         InventoryUpdateMove,
-        StartMotionMove,
-        StopMove,
+        MotionStartMove,
+        MotionStopMove,
     ),
 )
 
