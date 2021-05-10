@@ -9,7 +9,7 @@ from typing import Any, Dict, Final, List, NoReturn, Union
 
 ActorId = int
 
-VERSION = (0, 0, 1)
+VERSION = (0, 0, 2)
 PORT_BROADCAST = 54300
 PORT_DATA = 54301
 INVENTORY_SIZE: int = 20

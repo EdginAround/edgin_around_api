@@ -301,7 +301,7 @@ class Recipe:
         return Assembly(self._codename, [list() for _ in self._ingredients])
 
     def validate_assembly(self, assembly: Assembly) -> bool:
-        """"Checks if the passed `Assembly` satisfies the recipes requirements."""
+        """Checks if the passed `Assembly` satisfies the recipes requirements."""
 
         if len(self.get_ingredients()) != len(assembly.sources):
             return False

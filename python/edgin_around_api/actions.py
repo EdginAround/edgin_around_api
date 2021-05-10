@@ -95,6 +95,20 @@ class CraftEndAction(Action, defs.Serializable):
 
 
 @dataclass
+class IdleAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "idle"
+
+    actor_id: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        actor_id = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs) -> Action:
+            return IdleAction(**data)
+
+
+@dataclass
 class DamageAction(Action, defs.Serializable):
     SERIALIZATION_NAME = "damage"
 
@@ -112,6 +126,7 @@ class DamageAction(Action, defs.Serializable):
         @marshmallow.post_load
         def make(self, data, **kwargs) -> Action:
             return DamageAction(**data)
+
 
 @dataclass
 class InventoryUpdateAction(Action, defs.Serializable):
@@ -220,6 +235,7 @@ _ACTIONS = cast(
         CraftBeginAction,
         CraftEndAction,
         DamageAction,
+        IdleAction,
         InventoryUpdateAction,
         LocalizationAction,
         MotionAction,
