@@ -73,6 +73,12 @@ class Inventory:
         self.right_hand: Optional[EntityInfo] = None
         self.entries: List[Optional[EntityInfo]] = [None for i in range(defs.INVENTORY_SIZE)]
 
+    def public(self) -> "Inventory":
+        inventory = Inventory()
+        inventory.left_hand = self.left_hand
+        inventory.left_hand = self.left_hand
+        return inventory
+
     def get_hand(self, hand: defs.Hand) -> Optional[defs.ActorId]:
         if hand == defs.Hand.LEFT:
             return self.left_hand.id if self.left_hand else None
