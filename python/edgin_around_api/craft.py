@@ -19,6 +19,7 @@ class Essence(Enum):
     ROCKS = "rocks"
     GOLD = "gold"
     MEAT = "meat"
+    VEGY = "vegy"
     LOGS = "log"
     STICKS = "sticks"
 

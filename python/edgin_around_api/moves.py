@@ -42,7 +42,7 @@ class HandActivationMove(Move, defs.Serializable):
 
     class Schema(marshmallow.Schema):
         hand = EnumField(defs.Hand)
-        object_id = mf.Integer()
+        object_id = mf.Integer(allow_none=True)
 
         @marshmallow.post_load
         def make(self, data, **kwargs) -> Move:

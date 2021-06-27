@@ -51,6 +51,24 @@ class ActorDeletionAction(Action, defs.Serializable):
 
 
 @dataclass
+class ActorUpdateAction(Action, defs.Serializable):
+    """Action informing about state change of the `actor_id` actor."""
+
+    SERIALIZATION_NAME = "actor_update"
+
+    actor_id: defs.ActorId
+    form: str
+
+    class Schema(marshmallow.Schema):
+        actor_id = mf.Integer()
+        form = mf.String()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs) -> Action:
+            return ActorUpdateAction(**data)
+
+
+@dataclass
 class ConfigurationAction(Action, defs.Serializable):
     SERIALIZATION_NAME = "configuration"
 
@@ -95,20 +113,6 @@ class CraftEndAction(Action, defs.Serializable):
 
 
 @dataclass
-class IdleAction(Action, defs.Serializable):
-    SERIALIZATION_NAME = "idle"
-
-    actor_id: defs.ActorId
-
-    class Schema(marshmallow.Schema):
-        actor_id = mf.Integer()
-
-        @marshmallow.post_load
-        def make(self, data, **kwargs) -> Action:
-            return IdleAction(**data)
-
-
-@dataclass
 class DamageAction(Action, defs.Serializable):
     SERIALIZATION_NAME = "damage"
 
@@ -126,6 +130,102 @@ class DamageAction(Action, defs.Serializable):
         @marshmallow.post_load
         def make(self, data, **kwargs) -> Action:
             return DamageAction(**data)
+
+
+@dataclass
+class EatBeginAction(Action, defs.Serializable):
+    """
+    Action informing about starting eating.
+
+    Receving clients should start "eat" animation for the `eater_id` actor.
+    """
+
+    SERIALIZATION_NAME = "eat_begin"
+
+    eater_id: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        eater_id = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs) -> Action:
+            return EatBeginAction(**data)
+
+
+@dataclass
+class EatEndAction(Action, defs.Serializable):
+    """
+    Action informing about finishing eating.
+
+    Receving clients should finish animation for the `eater_id` actor and go to "idle".
+    """
+
+    SERIALIZATION_NAME = "eat_end"
+
+    eater_id: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        eater_id = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs) -> Action:
+            return CraftEndAction(**data)
+
+
+@dataclass
+class HarvestBeginAction(Action, defs.Serializable):
+    """
+    Action informing about starting harvesting.
+
+    Receving clients should start "pick" or "harvest" animation for the `who` actor.
+    """
+
+    SERIALIZATION_NAME = "harvest_begin"
+
+    who: defs.ActorId
+    what: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        who = mf.Integer()
+        what = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs) -> Action:
+            return PickBeginAction(**data)
+
+
+@dataclass
+class HarvestEndAction(Action, defs.Serializable):
+    """
+    Action informing about finishing harvesting.
+
+    Receving clients should finish the animation for the `eater_id` actor and go to "idle".
+    """
+
+    SERIALIZATION_NAME = "harvest_end"
+
+    who: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        who = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs) -> Action:
+            return PickEndAction(**data)
+
+
+@dataclass
+class IdleAction(Action, defs.Serializable):
+    SERIALIZATION_NAME = "idle"
+
+    actor_id: defs.ActorId
+
+    class Schema(marshmallow.Schema):
+        actor_id = mf.Integer()
+
+        @marshmallow.post_load
+        def make(self, data, **kwargs) -> Action:
+            return IdleAction(**data)
 
 
 @dataclass
@@ -231,10 +331,15 @@ _ACTIONS = cast(
     (
         ActorCreationAction,
         ActorDeletionAction,
+        ActorUpdateAction,
         ConfigurationAction,
         CraftBeginAction,
         CraftEndAction,
         DamageAction,
+        EatBeginAction,
+        EatEndAction,
+        HarvestBeginAction,
+        HarvestEndAction,
         IdleAction,
         InventoryUpdateAction,
         LocalizationAction,
